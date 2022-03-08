@@ -8,6 +8,7 @@ import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class MainActivity : AppCompatActivity() {
     private val goForwardButton: ImageButton by lazy {
@@ -24,6 +25,10 @@ class MainActivity : AppCompatActivity() {
 
     private val addressBar: EditText by lazy {
         findViewById(R.id.addressBar)
+    }
+
+    private val refreshLayout: SwipeRefreshLayout by lazy {
+        findViewById(R.id.refreshLayout)
     }
 
     private val webView: WebView by lazy {
@@ -74,6 +79,18 @@ class MainActivity : AppCompatActivity() {
 
         goHomeButton.setOnClickListener {
             webView.loadUrl(DEFAULT_URL)
+        }
+
+        refreshLayout.setOnRefreshListener {
+            webView.reload()
+        }
+    }
+
+    inner class WebViewClient: android.webkit.WebViewClient() {
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+
+            refreshLayout.isRefreshing = false
         }
     }
 
